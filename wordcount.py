@@ -2,7 +2,7 @@
 一定程度会觉得没什么好提高的，就只能从外部找刺激了。本题目在
 http://www.abling.com/programtestpython.html
 下面就是我的解法，同时上面的test还要求写一份关于实现的算法原理，
-我表示没有算法啊。。。完全就是一步步写。没有递归，也没有其他。
+我表示没有算法啊。。。完全就是一步步写。没有递归，也没有其他。我觉得我的嵌套太深了，学习下google的
 """
 
 import sys
@@ -19,7 +19,7 @@ def wordcount(src,targ):
           if w >=95 and w<=122:
             word=word+lc
           else:
-            if word!='':
+            if word:
               if result.has_key(word):
                 result[word]+=1
               else:
@@ -36,7 +36,7 @@ if __name__=='__main__':
   else:
     wordcount(args[1],args[2])
 
-#谷歌版 虽然二者的题目不一样    
+#谷歌版 虽然二者的题目不一样，所以处理逻辑上会有一点差异    
 #!/usr/bin/python -tt
 # Copyright 2010 Google Inc.
 # Licensed under the Apache License, Version 2.0
