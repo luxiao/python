@@ -1,6 +1,6 @@
+# -*- coding: cp936 -*-
 def bs(target,orderedlist):
-"""二分查找，话说我之前一直不能理解while后面
-跟个else有什么用，现在好像有点感觉了"""
+  """二分查找"""
   start = 0
   end = len(orderedlist)
   while start < end:
@@ -18,5 +18,4 @@ def bs(target,orderedlist):
     return None
 
 if __name__ == '__main__':
-  print bs(17, [3,5,6,7,8,13,16,18,19,25])
-
+  print bs(1, [3,5,6,7,8,13,16,18,19,25])
