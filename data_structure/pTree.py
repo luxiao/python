@@ -29,6 +29,7 @@ def pt(exp):
     return t
 
 def evaluate(parseTree):
+    """这个实现太巧妙了，首先是递归求解子树，其次是四则运算的处理"""
     opers={'+':operator.add, '-':operator.sub, '*':operator.mul, '/':operator.div}
     leftC = parseTree.getLeftChild()
     rightC = parseTree.getRightChild()
