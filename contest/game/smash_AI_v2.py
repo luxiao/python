@@ -33,49 +33,74 @@ def compare(src,target):
 
 def smash():
     target = gen()
-    #print 'target is: %s' % target
+    print 'target is: %s' % target
     init = splitList()
     result = {}
     flag = False
+    count = 0
     for ls in init[:-1]:             
-        result[ls] = compare(ls,target)
-        if sum([x+y for x,y in result.values()]) == step:
+        x,y = compare(ls,target)
+        count += 1
+        result[ls] = (x,y)
+        if x == step:
+            return count #直接在[1,2,3,4]或者[5,6,7,8]中找到了
+        elif sum([x+y for x,y in result.values()]) == step:
             flag = True
             break   
     if not flag:
         result[(9,)]=(0,1)
     #首轮判断完毕以后，消除value=(0,0)的子列表
     tmp = []
-    for x in result:
+    for x in result.keys():
         e,w = result[x]
         if e + w == 0:
-            tmp.append(x)
-    for i in tmp:
-        del result[i]
+            result.pop(x)
     #print result
-    count = 2 #count记录猜测次数，由于前一轮判断已经匹配过两次，所以初始值为2
     candy = []
     for i in result:
         candy = merge(candy,guess(i,result[i]))
     tmp=[]
     for c in candy:
         tmp.append(dict2list(c))
+    #print tmp
     assert(target in tmp)#这里假定结果一定在备选列表里，如果不在程序肯定猜不出来
     find = False
     while not find:
         tmp = dict2list(candy.pop(0))
+        #print tmp
         e,w = compare(tmp,target)
         result[tuple(tmp)]=(e,w)
-        print result
         count += 1
-        if e == 4:
+        if e == step:
             #print 'after %d times match, we\'ve found it!' % count
             #print tmp
             find = True
-        else:
-            for c in candy:
-                if compare(tmp,dict2list(c)) != (e,w):
-                    candy.remove(c)
+            break
+        elif e == 0 and w != 0:
+            for t in tmp:
+                for c in candy:
+                    if t in c.keys() and c[t] == tmp.index(t):
+                        candy.remove(c)
+        elif e != 0 and w == 0:
+            print tmp
+            print 'before',candy
+            cc = list(comb(tmp,e))
+            print cc
+            s = set()
+            for c in cc:
+                dic = {}
+                for x in c:
+                    dic[x] = tmp.index(x)                
+                s.add((x,y) for x,y in dic.items())
+            for t in candy:
+                ss = set(t.items())                
+                if not ss.issubset(s):
+                    tmp = candy.pop(candy.index(t))
+                    candy.append(tmp)
+            print 'after',candy
+        for c in candy:
+            if compare(tmp,dict2list(c)) != (e,w):
+                candy.remove(c)
     return count
         
 def dict2list(adict):
@@ -148,7 +173,7 @@ def merge(als,bls):
 
 if __name__ == '__main__':
     counter = []
-    number = 1
+    number = 2
     for i in range(number):
         counter.append(smash())
     print '%d里平均猜中所需次数：%d，超过10次的有：%d' % (number,sum(counter)//len(counter),len([x for x in counter if x >10]))
