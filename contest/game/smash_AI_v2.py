@@ -55,7 +55,6 @@ def smash():
         e,w = result[x]
         if e + w == 0:
             result.pop(x)
-    #print result
     candy = []
     for i in result:
         candy = merge(candy,guess(i,result[i]))
@@ -67,40 +66,35 @@ def smash():
     find = False
     while not find:
         tmp = dict2list(candy.pop(0))
-        #print tmp
         e,w = compare(tmp,target)
         result[tuple(tmp)]=(e,w)
+        print 'result is ', result        
         count += 1
         if e == step:
             #print 'after %d times match, we\'ve found it!' % count
             #print tmp
             find = True
             break
-        elif e == 0 and w != 0:
+        for c in candy:            
+            if compare(tmp,dict2list(c)) != (e,w):
+                candy.remove(c)
+        if e == 0 and w != 0:
             for t in tmp:
                 for c in candy:
                     if t in c.keys() and c[t] == tmp.index(t):
                         candy.remove(c)
-        elif e != 0 and w == 0:
-            print tmp
-            print 'before',candy
-            cc = list(comb(tmp,e))
-            print cc
-            s = set()
-            for c in cc:
-                dic = {}
-                for x in c:
-                    dic[x] = tmp.index(x)                
-                s.add((x,y) for x,y in dic.items())
-            for t in candy:
-                ss = set(t.items())                
-                if not ss.issubset(s):
-                    tmp = candy.pop(candy.index(t))
-                    candy.append(tmp)
-            print 'after',candy
+        elif e + w < step:
+            for c in candy:
+                if set(c.keys()) == set(tmp):
+                    candy.remove(c)
+        elif e + w == step:
+            for c in candy:
+                if set(c.keys()) != set(tmp):
+                    candy.remove(c)
         for c in candy:
-            if compare(tmp,dict2list(c)) != (e,w):
+            if len(set(c.keys()) & set(tmp)) > e+w:
                 candy.remove(c)
+        
     return count
         
 def dict2list(adict):
