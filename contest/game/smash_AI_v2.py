@@ -33,7 +33,7 @@ def compare(src,target):
 
 def smash():
     target = gen()
-    print 'target is: %s' % target
+    #print 'target is: %s' % target    
     init = splitList()
     result = {}
     flag = False
@@ -68,33 +68,25 @@ def smash():
         tmp = dict2list(candy.pop(0))
         e,w = compare(tmp,target)
         result[tuple(tmp)]=(e,w)
-        print 'result is ', result        
+        #print 'result is ', result        
         count += 1
         if e == step:
             #print 'after %d times match, we\'ve found it!' % count
             #print tmp
             find = True
             break
-        for c in candy:            
-            if compare(tmp,dict2list(c)) != (e,w):
-                candy.remove(c)
+        candy = [c for c in candy if compare(tmp,dict2list(c)) == (e,w)]           
         if e == 0 and w != 0:
-            for t in tmp:
-                for c in candy:
-                    if t in c.keys() and c[t] == tmp.index(t):
-                        candy.remove(c)
+            for t in tmp:                
+                candy = [c for c in candy
+                         if t not in c.keys() or c[t] != tmp.index]
         elif e + w < step:
-            for c in candy:
-                if set(c.keys()) == set(tmp):
-                    candy.remove(c)
+            candy = [c for c in candy
+                     if set(c.keys()) != set(tmp)]
         elif e + w == step:
-            for c in candy:
-                if set(c.keys()) != set(tmp):
-                    candy.remove(c)
-        for c in candy:
-            if len(set(c.keys()) & set(tmp)) > e+w:
-                candy.remove(c)
-        
+            candy = [c for c in candy if set(c.keys()) == set(tmp)]
+
+        candy = [c for c in candy if len(set(c.keys()) & set(tmp)) <= e+w]    
     return count
         
 def dict2list(adict):
@@ -167,8 +159,9 @@ def merge(als,bls):
 
 if __name__ == '__main__':
     counter = []
-    number = 2
+    number = 20000
     for i in range(number):
         counter.append(smash())
-    print '%d里平均猜中所需次数：%d，超过10次的有：%d' % (number,sum(counter)//len(counter),len([x for x in counter if x >10]))
+    print '%d次里平均猜中所需次数：%d，超过10次的有：%d' % (number,sum(counter)//len(counter),len([x for x in counter if x >10]))
     
+
