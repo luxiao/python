@@ -159,7 +159,7 @@ def merge(als,bls):
 
 if __name__ == '__main__':
     counter = []
-    number = 20000
+    number = 200000
     for i in range(number):
         counter.append(smash())
     print '%d次里平均猜中所需次数：%d，超过10次的有：%d' % (number,sum(counter)//len(counter),len([x for x in counter if x >10]))
