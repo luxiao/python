@@ -50,7 +50,6 @@ def smash():
     if not flag:
         result[(9,)]=(0,1)
     #首轮判断完毕以后，消除value=(0,0)的子列表
-    tmp = []
     for x in result.keys():
         e,w = result[x]
         if e + w == 0:
@@ -58,11 +57,8 @@ def smash():
     candy = []
     for i in result:
         candy = merge(candy,guess(i,result[i]))
-    tmp=[]
-    for c in candy:
-        tmp.append(dict2list(c))
-    #print tmp
-    assert(target in tmp)#这里假定结果一定在备选列表里，如果不在程序肯定猜不出来
+    #这里断言结果一定在备选列表里，如果不在的话程序肯定猜不出来
+    assert(target in [dict2list(c) for c in candy])
     find = False
     while not find:
         tmp = dict2list(candy.pop(0))
@@ -71,8 +67,6 @@ def smash():
         #print 'result is ', result        
         count += 1
         if e == step:
-            #print 'after %d times match, we\'ve found it!' % count
-            #print tmp
             find = True
             break
         candy = [c for c in candy if compare(tmp,dict2list(c)) == (e,w)]           
@@ -85,7 +79,6 @@ def smash():
                      if set(c.keys()) != set(tmp)]
         elif e + w == step:
             candy = [c for c in candy if set(c.keys()) == set(tmp)]
-
         candy = [c for c in candy if len(set(c.keys()) & set(tmp)) <= e+w]    
     return count
         
@@ -119,8 +112,8 @@ def guess(ls,pattern):
     return merge(pl,cl)
 
 def unwind(adict):
-    """该函数将dict里value为list进行unwind操作，但是排除掉位置冲突的组合
-    比如{2:[0,2,3]}解析为{2:0},{2:2},{2:3}"""
+    """该函数将dict里value为list进行unwind操作
+    比如{2:[0,2,3]}解析为[{2:0},{2:2},{2:3}]"""
     result = []
     for k,v in adict.items():
         if result == []:
@@ -136,11 +129,7 @@ def unwind(adict):
                         i[k] = value
     return result 
 def merge(als,bls):
-    """将两个list进行合并，排除
-    [{1: 0}, {2: 1}, {3: 2}, {4: 3}]
-    [{1: 1}, {1: 2}, {1: 3}, {2: 0}, {2: 2}, {2: 3}
-    , {3: 0},{3: 1}, {3: 3}, {4: 0}, {4: 1}, {4: 2}]
-    """
+    """将两个list进行合并，排除元素或者元素位置冲突的组合"""
     result = []
     if als == []:
         result = bls
@@ -159,9 +148,7 @@ def merge(als,bls):
 
 if __name__ == '__main__':
     counter = []
-    number = 200000
+    number = 2000
     for i in range(number):
         counter.append(smash())
-    print '%d次里平均猜中所需次数：%d，超过10次的有：%d' % (number,sum(counter)//len(counter),len([x for x in counter if x >10]))
-    
-
+    print '%d次里平均猜中所需次数：%f，超过10次的有：%d' % (number,sum(counter)*1.0/number,len([x for x in counter if x >10]))
