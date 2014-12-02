@@ -1,6 +1,5 @@
 #!../bin/python
 import pprint as pp
-import ipdb
 import types
 
 d = {
