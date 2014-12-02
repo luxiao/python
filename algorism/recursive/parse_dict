@@ -1,0 +1,34 @@
+#!../bin/python
+import pprint as pp
+import ipdb
+import types
+
+d = {
+        'a':1,
+        'b':'abc',
+        'c':[1,2,3],
+        'd':{
+            'n': 'haha',
+            'ag':1,
+            'tes': ['ab',[1,2,3,'cd',{'gh':1}],[]],
+            'ff':{
+                'f':'f'}
+        }
+    }
+pp.pprint(d)
+
+
+def parse(d):
+    t = type(d)
+    if t == types.DictType:
+        for k,v in d.items():
+            d[k] = parse(v)
+        t = d
+    elif t == types.ListType:
+        for index,item in enumerate(d):
+            d[index] = parse(item)
+        t = d
+    return t   
+parse(d)
+
+pp.pprint(d)
