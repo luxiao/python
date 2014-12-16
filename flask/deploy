@@ -1,0 +1,5 @@
+这篇文章记录了如何在一台全新的linux服务器上部署flask应用。
+首先，创建一个用户来部署应用，不建议在root下直接部署。
+addgroup apps
+adduser --ingroup apps apps
+chmod 775 /home/apps
