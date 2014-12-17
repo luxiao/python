@@ -1,5 +1,60 @@
-这篇文章记录了如何在一台全新的linux服务器上部署flask应用。
-首先，创建一个用户来部署应用，不建议在root下直接部署。
-addgroup apps
-adduser --ingroup apps apps
-chmod 775 /home/apps
+一台全新的linux服务器上部署flask应用设置
+1、在服务器上创建一个用户来部署应用，不建议在root下直接部署。
+    addgroup apps
+    adduser --ingroup apps apps
+    chmod 775 /home/apps
+2、（可选）创建公钥登录远程服务器
+    ssh-keygen -t rsa
+    生成一对公钥和私钥后，把公钥的内容复制到linux服务器：
+    /home/apps/.ssh/authorized_keys文件。
+3、准备flask的运行环境：git，python，pip，virtualenv，flask，uWSGI
+    sudo apt-get install git
+    sudo apt-get install python-dev
+    sudo apt-get install python-pip
+    sudo pip install virtualenv
+
+    这里存放我们的app
+    sudo mkdir /apps 
+    app运行环境，与系统级python环境隔离开
+    sudo virtualenv /apps/env
+
+    env/bin/pip install -r ~/git_repo/python/requirements.txt
+    
+4、安装nginx
+    由于ucloud服务器默认的nginx版本1.2.1太低，需要手动更新到新版本
+    先安装nginx_signing.key
+    wget http://nginx.org/keys/nginx_signing.key
+    sudo apt-key add nginx_signing.key
+    编辑/etc/apt/sources.list，追加如下：
+    deb http://nginx.org/packages/debian/ wheezy nginx
+    更新apt资源
+    sudo apt-get update
+    再检查nginx版本发现已经有最新的稳定版1.6.2，安装之。
+    sudo apt-get install nginx
+    服务启动，停止，重启
+    sudo service nginx start|stop|restart
+
+5、（可选）UDB
+    安装最新版mongodb客户端工具
+    sudo apt-get install mongodb-org-shell
+    管理员账号：root/qpqpqpqp@10.10.9.170:27017/admin
+    应用账号：apps/apps@10.10.9.170/amep
+
+6、配置uWSGI和nginx，测试flask应用。
+    配置nginx：
+    sudo vim /etc/nginx/nginx.conf
+    # uWSGI server config
+      upstream uwsgicluster {
+          server  127.0.0.1:8080;
+      }
+      server {
+          listen 80;
+          location / {
+                  include uwsgi_params;
+                  uwsgi_pass      uwsgicluster;
+          }
+      }  
+   启动nginx，启动uWSGI
+   /apps/env/bin/uwsgi --socket 127.0.0.1:8080 -w WSGI:app
+   访问http://ua.senjury.com，成功！
+   curl http://ua.snejury.com
