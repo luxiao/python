@@ -21,7 +21,7 @@
     env/bin/pip install -r ~/git_repo/python/requirements.txt
     
 4、安装nginx
-    由于ucloud服务器默认的nginx版本1.2.1太低，需要手动更新到新版本
+    由于debian服务器默认的nginx版本1.2.1太低，需要手动更新到新版本
     先安装nginx_signing.key
     wget http://nginx.org/keys/nginx_signing.key
     sudo apt-key add nginx_signing.key
@@ -34,13 +34,7 @@
     服务启动，停止，重启
     sudo service nginx start|stop|restart
 
-5、（可选）UDB
-    安装最新版mongodb客户端工具
-    sudo apt-get install mongodb-org-shell
-    管理员账号：root/qpqpqpqp@10.10.9.170:27017/admin
-    应用账号：apps/apps@10.10.9.170/amep
-
-6、配置uWSGI和nginx，测试flask应用。
+5、配置uWSGI和nginx，测试flask应用。
     配置nginx：
     sudo vim /etc/nginx/nginx.conf
     # uWSGI server config
@@ -56,5 +50,5 @@
       }  
    启动nginx，启动uWSGI
    /apps/env/bin/uwsgi --socket 127.0.0.1:8080 -w WSGI:app
-   访问http://ua.senjury.com，成功！
-   curl http://ua.snejury.com
+   访问http://localhost，成功！
+   curl http://localhost
