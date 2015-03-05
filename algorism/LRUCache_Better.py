@@ -9,7 +9,7 @@ class LRUCache:
     # @return an integer
     def get(self, key):
         value = -1
-        if key in self.dic:
+        if self.dic.has_key(key):
             value = self.dic[key]
             self.keys.append(self.keys.pop(self.keys.index(key)))
         return value
@@ -18,12 +18,10 @@ class LRUCache:
     # @param value, an integer
     # @return nothing
     def set(self, key, value):
-        v = self.get(key)
-        if v == -1:
-            l = len(self.keys)
-            if l >= self.cap:
-                del self.dic[self.keys.pop(0)]
-            self.keys.append(key)
-            self.dic[key] = value
+        if self.dic.has_key(key):
+            self.keys.append(self.keys.pop(self.keys.index(key)))
         else:
-            self.dic[key] = value
+            if len(self.keys) >= self.cap:
+                self.dic.pop(self.keys.pop(0))
+            self.keys.append(key)
+        self.dic[key] = value
