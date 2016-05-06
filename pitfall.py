@@ -12,5 +12,4 @@ for k in d:
 这个迭代的结果就是d.pop()了一次，d为{'b': 2}，引发一个runtime error
 改进：for k in d.copy():
           d.pop(k)
-copy的操作相当于复制了一个新的dict，基于新的dict的key来pop另外一个dict
-
+copy的操作相当于复制了一个新的dict，基于新的dict的key来pop另外一个dict。
